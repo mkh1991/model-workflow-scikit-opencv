@@ -3,6 +3,8 @@ import warnings
 import numpy as np
 import os
 import pickle
+import uuid
+import hashlib
 from sklearn.externals import joblib
 
 class ScikitCheckpoint():
@@ -11,12 +13,12 @@ class ScikitCheckpoint():
         self.snapshots_path = snapshots_path
         self.label = label
         self.type = type
-        self.count = 0
 
     def save_model(self, model, stats):
-        snapshot_directory = os.path.join(self.snapshots_path, str(self.count))
-        model_filename = os.path.join(self.snapshots_path, str(self.count), 'model.dat')
-        stats_filename = os.path.join(self.snapshots_path, str(self.count), 'stats.json')
+        snapshot_id = hashlib.sha1(str(uuid.uuid4()).encode("UTF=8")).hexdigest()[:10]
+        snapshot_directory = os.path.join(self.snapshots_path, str(snapshot_id))
+        model_filename = os.path.join(self.snapshots_path, str(snapshot_id), 'model.dat')
+        stats_filename = os.path.join(self.snapshots_path, str(snapshot_id), 'stats.json')
         if not os.path.exists(snapshot_directory):
             os.makedirs(snapshot_directory)
         if self.label:
@@ -31,8 +33,6 @@ class ScikitCheckpoint():
 
         with open(stats_filename, 'wb') as f:
             f.write(json.dumps(stats))
-
-        self.count += 1
 
         return True
 
