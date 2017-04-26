@@ -45,7 +45,7 @@ print("Mean squared error: %.2f"% mse)
 print('Variance score: %.2f' % variance_score)
 
 # save the classifier
-stats = {"cofficients": coefficients, "mse": mse,"variance_score":variance_score}
+stats = {"mse": mse,"variance_score":variance_score}
 checkpoint = ScikitCheckpoint(os.environ['SNAPSHOTS_DIR'], )
 checkpoint.save_model(regr, stats)
 
